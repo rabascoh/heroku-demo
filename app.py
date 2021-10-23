@@ -37,7 +37,7 @@ app = Flask(__name__)
 # This route renders the homepage
 @app.route("/")
 def index():
-    render_template("index.html")
+    return render_template("index.html")
 
 # This route returns info about individual items
 
