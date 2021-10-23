@@ -11,6 +11,7 @@ function getColorGradientGenerator(min, max) {
 
 // Generates a scatter chart that shows cost by wears per month
 function generateCostByWearsChart(itemsData) {
+    console.log(itemsData);
     // Parse the items data - pull out cost, wears per month and cost per wear
     // Store each in an array (this is how Plotly wants the data)
     const itemsCost = itemsData.map(item => item.cost);
@@ -25,13 +26,30 @@ function generateCostByWearsChart(itemsData) {
 
     // Create the data trace for the plot
     // x will be cost, y will be wears per month and color will be cost per wear
-
+    const data = [
+        {
+            x: itemsCost,
+            y: itemsWearsPerMonth,
+            mode: "marker",
+            marker: {
+                costPerWearColors
+            },
+            type: "scatter"
+        }
+    ]
 
     // Set layout parameters
-
+    const layout = {
+        xaxis: {
+            title: "Cost of Item"
+        },
+        yaxis: {
+            title: "Wears per Month"
+        }
+    };
 
     // Generate plot
-
+    Plotly.newPlot('costByWears', data, layout);
 };
 
 // Generates a bar chart of how many items there are of each source type
@@ -53,15 +71,34 @@ function generateItemsBySource(itemsData) {
 
     // Create the data trace for the plot
     // x will be the sources and y will be the total of each source
-
+    const data = [
+        {
+            x: Object.keys(uniqueSourceCount),
+            y: Object.values(uniqueSourceCount),
+            marker: {color: "#EDAE49"},
+            type: "bar"
+        }
+    ];
     // Set layout parameters
-
+    const layout = {
+        xaxis: {
+            title: "Source"
+        },
+        yaxis: {
+            title: "Total Number of Items"
+        }
+    };
 
     // Generate plot
-
+    Plotly.newPlot("itemsBySource", data, layout)
 };
 
 /////////// API Calls (and actually running the code) /////////////
 // Use d3 to call your API route that returns data
+d3.json("api/items").then((itemsData) => {
+    generateCostByWearsChart(itemsData);
+    generateItemsBySource(itemsData);
+});
+
 // Then call the functions above to generate the plots
 
